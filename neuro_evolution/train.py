@@ -2,8 +2,22 @@ from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.callbacks import EarlyStopping
 
+import tensorflow as tf
+import os
+
 early_stopper = EarlyStopping(patience=5)
 
+def check_tpu():
+    try:
+        tpu_address = 'grpc://' + os.environ['COLAB_TPU_ADDR']
+        print ('TPU address is: ', tpu_address)
+
+        with tf.Session(tpu_address) as session:
+          devices = session.list_devices()
+    
+        return True, tpu_address
+    except Exception:
+        return False, ""
 
 def compile_model(network, input_shape):
     """
@@ -31,8 +45,18 @@ def compile_model(network, input_shape):
         activation=network.get('last_layer_activations', 'sigmoid'),
     ))
 
+    has_tpu, tpu_address = check_tpu()
+    if has_tpu:
+        model = tf.contrib.tpu.keras_to_tpu_model(
+            model,
+            strategy=tf.contrib.tpu.TPUDistributionStrategy(
+                tf.contrib.cluster_resolver.TPUClusterResolver(tpu_address)
+            ))
+
     model.compile(loss=network.get('losses', 'binary_crossentropy'), optimizer=optimizer,
-                  metrics=[network.get('mertics', 'accuracy')])
+                  metrics=[network.get('metrics', 'accuracy')])
+
+    print("DALEE******!**!*!*!**!*!*")
 
     return model
 
