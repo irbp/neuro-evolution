@@ -46,19 +46,22 @@ def compile_model(network, input_shape):
     ))
 
     has_tpu, tpu_address = check_tpu()
+    print(has_tpu)
     if has_tpu:
-        model = tf.contrib.tpu.keras_to_tpu_model(
+        tpu_model = tf.contrib.tpu.keras_to_tpu_model(
             model,
             strategy=tf.contrib.tpu.TPUDistributionStrategy(
                 tf.contrib.cluster_resolver.TPUClusterResolver(tpu_address)
             ))
 
-    model.compile(loss=network.get('losses', 'binary_crossentropy'), optimizer=optimizer,
-                  metrics=[network.get('metrics', 'accuracy')])
+        tpu_model.compile(loss=network.get('losses', 'binary_crossentropy'), optimizer=optimizer,
+                    metrics=[network.get('metrics', 'accuracy')])
+        return tpu_model
 
-    print("DALEE******!**!*!*!**!*!*")
-
-    return model
+    else:
+        model.compile(loss=network.get('losses', 'binary_crossentropy'), optimizer=optimizer,
+                    metrics=[network.get('metrics', 'accuracy')])
+        return model
 
 
 def train_and_score(network, x_train, y_train, x_test, y_test):
