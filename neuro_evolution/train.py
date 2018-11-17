@@ -85,7 +85,10 @@ def train_and_score(network, x_train, y_train, x_test, y_test):
               validation_data=(x_test, y_test),
               callbacks=[early_stopper])
 
-    score = model.evaluate(x_test, y_test, verbose=0)
+    score = model.evaluate(x_test,
+                           y_test,
+                           verbose=0,
+                           batch_size=network.get('batch_size', 1024))
 
     K.clear_session()
     print("------ Accuracy: {}".format(score[1]))
