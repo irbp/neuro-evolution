@@ -65,12 +65,14 @@ def compile_model(network, input_shape):
         return model
 
 
-def train_and_score(network, x_train, y_train, x_test, y_test):
+def train_and_score(network, x_train, y_train, x_val, y_val, x_test, y_test):
     """
 
     :param network dict: dictionary with network parameters
     :param x_train array: numpy array with features for traning
     :param y_train array: numpy array with labels for traning
+    :param x_val array: numpy array with features for validation
+    :param y_val array: numpy array with labels for validation
     :param x_test array: numpy array with labels for test
     :param y_test array: numpy array with labels for test
     :return float: score
@@ -82,7 +84,7 @@ def train_and_score(network, x_train, y_train, x_test, y_test):
               batch_size=network.get('batch_size', 128),
               epochs=network.get('epochs', 10000),  # using early stopping, so no real limit
               verbose=network.get('verbose', 0),
-              validation_data=(x_test, y_test),
+              validation_data=(x_val, y_val),
               callbacks=[early_stopper])
 
     score = model.evaluate(x_test,
