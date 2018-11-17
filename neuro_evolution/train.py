@@ -1,6 +1,7 @@
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras import backend as K
 
 import tensorflow as tf
 import os
@@ -85,5 +86,8 @@ def train_and_score(network, x_train, y_train, x_test, y_test):
               callbacks=[early_stopper])
 
     score = model.evaluate(x_test, y_test, verbose=0)
+
+    K.clear_session()
+    print("------ Accuracy: {}".format(score[1]))
 
     return score[1]  # 1 is accuracy. 0 is loss.
