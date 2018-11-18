@@ -5,7 +5,7 @@
 This repository is wrapper for the code provided by [Matt Harvey]('https://github.com/harvitronix')
 repository: https://github.com/harvitronix/neural-network-genetic-algorithm
 
-installation: ```pip install git+https://github.com/subpath/neuro-evolution.git```
+installation: ```pip install git+https://github.com/irbp/neuro-evolution.git```
 
 Example of usage:
 
@@ -33,7 +33,7 @@ params = {
 
 search = NeuroEvolution(generations = 10, population = 10, params=params)
 
-search.evolve(x_train, y_train, x_val, y_val, x_test, y_test, )
+search.evolve(x_train, y_train, x_val, y_val, x_test, y_test)
 
 
 100%|██████████| 10/10 [05:37<00:00, 29.58s/it]
